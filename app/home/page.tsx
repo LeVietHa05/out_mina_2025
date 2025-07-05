@@ -2,6 +2,14 @@
 
 import Image from "next/image";
 import { useCallback, useRef, useState } from "react";
+import MeetingSummary from "../ui/meetingSumary";
+
+type MeetingContent = {
+  ghi_chu_tong_quan: string;
+  ke_hoach_tiep_theo: Record<string, string>;
+  tien_do_cong_viec: Record<string, string>;
+  raw: string; //optional
+};
 
 const filters = [
   { key: "recent", label: "Gần đây", icon: "recent.svg" },
@@ -22,6 +30,7 @@ export default function HomePage() {
   const [droppedFiles, setDroppedFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFilter, setSelectedFilter] = useState<string>("mine");
+  const [meetingData, setMeetingData] = useState<MeetingContent | null>(null);
 
   const handleFilterClick = (key: string) => {
     setSelectedFilter(key);
@@ -60,11 +69,12 @@ export default function HomePage() {
     const formData = new FormData();
     files.forEach((file) => {
       console.log(file);
-      formData.append("files", file);
+      formData.append("file", file);
     });
 
     try {
       // TODO: update the URL later
+      //   const res = await fetch("/api/mock", {
       const res = await fetch(NEXT_PUBLIC_API_URL, {
         method: "POST",
         headers: {
@@ -80,8 +90,9 @@ export default function HomePage() {
       }
 
       const result = await res.json();
-      alert(result);
       console.log("Uploaded:", result);
+
+      setMeetingData(result.content);
     } catch (err) {
       console.error(err);
     }
@@ -165,6 +176,9 @@ export default function HomePage() {
             onChange={handleFileChange}
           />
         </div>
+
+        {/* Hiển thị dữ liệu hội nghị */}
+        {meetingData && <MeetingSummary content={meetingData} />}
 
         {/* Hiển thị file */}
         {droppedFiles.length > 0 && (

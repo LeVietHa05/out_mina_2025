@@ -1,0 +1,27 @@
+{
+  "tien_do_cong_viec": {
+    "1": "Phần tính năng gom nhóm báo cáo đã bàn giao. Giang sẽ xác nhận lại tiến độ.",
+    "2": "Phần lệnh và phần báo cáo sẽ gộp làm một lần bàn giao thay vì hai lần để tránh phát sinh và test lại.",
+    "3": "Phần sổ lệnh của anh Cường dự kiến bàn giao vào ngày 27/06, có thể đẩy sớm hơn trong tuần này, muộn nhất là ngày mai.",
+    "4": "Phần gom nhóm báo cáo đã hoàn thành và có phiên bản.",
+    "5": "Dự kiến bàn giao toàn bộ cả hai phần (sổ lệnh và báo cáo) vào tuần sau, có thể sớm hơn dự kiến là ngày mùng 9.",
+    "6": "Thủ tục cho phần bàn giao đã chuẩn bị cơ bản đầy đủ, chỉ còn chờ bàn giao và xác nhận lại.",
+    "7": "Phần code của phần web có nhiều thay đổi, cần thêm thời gian để đảm bảo an toàn thông tin, đẩy sang tuần sau.",
+    "8": "Anh Cường sẽ test và xác nhận kết quả phần sổ lệnh muộn nhất vào thứ Tư, ngày 27/06.",
+    "9": "Phần mua bán chủ động dự kiến bàn giao cùng phần lệnh vào ngày 11/07. Sẽ gửi lại cho anh Cường test vào ngày mùng 4/07.",
+    "10": "Phần 2 (yêu cầu của Giang và Quỳnh) đang được phân công. Dự kiến hoàn thành hết tháng 9.",
+    "11": "Phần tài sản của Giang đã gửi yêu cầu xuống, dự kiến lên ngày 15/09.",
+    "12": "Phần của Quỳnh đang chờ thông tin từ bên đối tác, sẽ cập nhật theo tiến độ bên đó.",
+    "13": "Hai đầu việc của Giang và Quỳnh đã rõ ràng, đang chờ xử lý. Phần báo cáo của Quỳnh cần xem lại cách xử lý với bên môi giới/kinh doanh."
+  },
+  "ke_hoach_tiep_theo": {
+    "1": "Giang xác nhận lại tiến độ phần gom nhóm báo cáo.",
+    "2": "Hoàn thiện phần sổ lệnh và bàn giao.",
+    "3": "Kiệt sẽ test và xác nhận kết quả phần sổ lệnh vào thứ Tư, ngày 27/06.",
+    "4": "Gửi phần mua bán chủ động cho anh Cường test vào ngày mùng 4/07.",
+    "5": "Hoàn thiện các phần việc còn lại của Phần 2, đặc biệt là các yêu cầu của Giang và Quỳnh.",
+    "6": "Xem xét lại cách xử lý phần báo cáo của Quỳnh với bên môi giới/kinh doanh.",
+    "7": "Kiệt cập nhật thêm thông tin về phần mua bán chủ động và các yêu cầu cần thiết."
+  },
+  "ghi_chu_tong_quan": "Cuộc họp cập nhật tiến độ các tính năng gom nhóm báo cáo, sổ lệnh, mua bán chủ động và các yêu cầu của Phần 2. Một số phần đã bàn giao hoặc sắp bàn giao, các phần khác đang trong quá trình xử lý và cần theo dõi thêm."
+}
