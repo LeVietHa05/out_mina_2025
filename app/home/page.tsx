@@ -12,7 +12,9 @@ const filters = [
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 if (!NEXT_PUBLIC_API_URL) {
-  throw new Error("NEXT_PUBLIC_API_URL is not defined in the environment variables");
+  throw new Error(
+    "NEXT_PUBLIC_API_URL is not defined in the environment variables"
+  );
 }
 
 export default function HomePage() {
@@ -56,7 +58,10 @@ export default function HomePage() {
 
   const uploadFiles = async (files: File[]) => {
     const formData = new FormData();
-    files.forEach((file) => formData.append("files", file));
+    files.forEach((file) => {
+      console.log(file);
+      formData.append("files", file);
+    });
 
     try {
       // TODO: update the URL later
@@ -64,11 +69,13 @@ export default function HomePage() {
         method: "POST",
         headers: {
           Accept: "application/json",
+          "Access-Control-Allow-Origin": "*",
         },
         body: formData,
       });
 
       if (!res.ok) {
+        console.log(res);
         throw new Error("Upload failed");
       }
 
@@ -98,7 +105,7 @@ export default function HomePage() {
               <button
                 key={filter.key}
                 onClick={() => handleFilterClick(filter.key)}
-                className={`px-4 py-1.5 rounded-full flex items-center gap-1 text-sm border transition-all
+                className={`px-4 py-1.5 rounded-full flex justify-center items-center gap-1 text-sm border transition-all
                   ${
                     isActive
                       ? "bg-blue-100 text-blue-700 border-blue-300"

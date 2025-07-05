@@ -21,7 +21,7 @@ export default function Header() {
           <input
             type="text"
             placeholder="Tìm kiếm hội thoại"
-            className="pl-10 pr-4 py-2 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300 border-2"
+            className="pl-10 pr-4 py-2 rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300 border-2"
           />
           <div className="absolute left-3 top-1/2 transform -translate-y-1/2 opacity-70">
             <Image src="/icon/search.svg" alt="search" width={24} height={24} />
