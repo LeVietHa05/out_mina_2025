@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useCallback, useRef, useState } from "react";
 import MeetingSummary from "../ui/meetingSumary";
+import ErrorAlert from "../ui/errorAlert";
 
 type MeetingContent = {
   ghi_chu_tong_quan: string;
@@ -34,6 +35,7 @@ export default function HomePage() {
   const [meetingData, setMeetingData] = useState<MeetingContent | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0); // giá trị từ 0 đến 100
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleFilterClick = (key: string) => {
     setSelectedFilter(key);
@@ -83,6 +85,8 @@ export default function HomePage() {
     try {
       setIsLoading(true);
       setProgress(0);
+      setErrorMessage(null); // reset trước khi gọi
+
       // TODO: update the URL later
       //   const res = await fetch("/api/mock", {
       const res = await fetch(NEXT_PUBLIC_API_URL, {
@@ -96,7 +100,7 @@ export default function HomePage() {
       setProgress(20);
       if (!res.ok) {
         console.log(res);
-        throw new Error("Upload failed");
+        throw new Error("Không thể upload tệp.");
       }
 
       const result = await res.json();
@@ -106,13 +110,20 @@ export default function HomePage() {
       setProgress(50);
 
       const newRes = await fetch(`${NEXT_PUBLIC_API_URL_2}?job_id=${jobID}`);
-
+      if (!newRes.ok) {
+        throw new Error("Lỗi khi lấy kết quả từ hệ thống.");
+      }
       const newResult = await newRes.json();
       setProgress(100);
 
       setMeetingData(newResult.content);
     } catch (err) {
       console.error(err);
+      setErrorMessage(
+        err instanceof Error
+          ? err.message
+          : "Đã có lỗi xảy ra khi xử lý yêu cầu."
+      );
     } finally {
       setTimeout(() => {
         setIsLoading(false);
@@ -213,7 +224,11 @@ export default function HomePage() {
             </p>
           </div>
         )}
-
+        {errorMessage && (
+          <div className="mt-4">
+            <ErrorAlert message={errorMessage} />
+          </div>
+        )}
         {/* Hiển thị dữ liệu hội nghị */}
         {meetingData && <MeetingSummary content={meetingData} />}
 
