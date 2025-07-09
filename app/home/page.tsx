@@ -19,7 +19,8 @@ const filters = [
 ];
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL || "";
-if (!NEXT_PUBLIC_API_URL) {
+const NEXT_PUBLIC_API_URL_2 = process.env.NEXT_PUBLIC_API_URL_2 || "";
+if (!NEXT_PUBLIC_API_URL || !NEXT_PUBLIC_API_URL_2) {
   throw new Error(
     "NEXT_PUBLIC_API_URL is not defined in the environment variables"
   );
@@ -31,6 +32,8 @@ export default function HomePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFilter, setSelectedFilter] = useState<string>("mine");
   const [meetingData, setMeetingData] = useState<MeetingContent | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [progress, setProgress] = useState(0); // giá trị từ 0 đến 100
 
   const handleFilterClick = (key: string) => {
     setSelectedFilter(key);
@@ -66,6 +69,11 @@ export default function HomePage() {
   };
 
   const uploadFiles = async (files: File[]) => {
+    if (isLoading) {
+      alert("Đang xử lý, vui lòng đợi...");
+      return;
+    }
+
     const formData = new FormData();
     files.forEach((file) => {
       console.log(file);
@@ -73,6 +81,8 @@ export default function HomePage() {
     });
 
     try {
+      setIsLoading(true);
+      setProgress(0);
       // TODO: update the URL later
       //   const res = await fetch("/api/mock", {
       const res = await fetch(NEXT_PUBLIC_API_URL, {
@@ -83,18 +93,31 @@ export default function HomePage() {
         },
         body: formData,
       });
-
+      setProgress(20);
       if (!res.ok) {
         console.log(res);
         throw new Error("Upload failed");
       }
 
       const result = await res.json();
-      console.log("Uploaded:", result);
 
-      setMeetingData(result.content);
+      const jobID = result.job_id;
+      console.log("jobID:", jobID);
+      setProgress(50);
+
+      const newRes = await fetch(`${NEXT_PUBLIC_API_URL_2}?job_id=${jobID}`);
+
+      const newResult = await newRes.json();
+      setProgress(100);
+
+      setMeetingData(newResult.content);
     } catch (err) {
       console.error(err);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+        setProgress(0); // Reset sau một khoảng thời gian nhỏ
+      }, 300);
     }
   };
 
@@ -176,6 +199,20 @@ export default function HomePage() {
             onChange={handleFileChange}
           />
         </div>
+        {/* loading */}
+        {isLoading && (
+          <div className="mt-6">
+            <div className="h-3 w-full bg-gray-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-blue-500 transition-all duration-500"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+            <p className="text-sm text-blue-600 mt-1 text-center">
+              Đang xử lý: {progress}%
+            </p>
+          </div>
+        )}
 
         {/* Hiển thị dữ liệu hội nghị */}
         {meetingData && <MeetingSummary content={meetingData} />}
