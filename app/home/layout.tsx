@@ -13,7 +13,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
       {/* Body: Sidebar + Main */}
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
-        <main className="flex-1 p-6 overflow-auto bg-white rounded-2xl shadow-lg mt-4">
+        <main className="flex-1 p-6 overflow-auto bg-white rounded-2xl shadow-lg my-4 mr-4">
           {children}
         </main>
       </div>
