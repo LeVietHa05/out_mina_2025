@@ -30,6 +30,7 @@ if (!NEXT_PUBLIC_API_URL || !NEXT_PUBLIC_API_URL_2) {
 export default function HomePage() {
   const [isDragging, setIsDragging] = useState(false);
   const [droppedFiles, setDroppedFiles] = useState<File[]>([]);
+  const [inputData, setInputData] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFilter, setSelectedFilter] = useState<string>("mine");
   const [meetingData, setMeetingData] = useState<MeetingContent | null>(null);
@@ -57,7 +58,7 @@ export default function HomePage() {
     setIsDragging(false);
     const files = Array.from(e.dataTransfer.files);
     setDroppedFiles(files);
-    await uploadFiles(files);
+    // await uploadFiles(files);
   }, []);
 
   const handleClickUpload = () => {
@@ -67,7 +68,11 @@ export default function HomePage() {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
     setDroppedFiles(files);
-    await uploadFiles(files);
+    // await uploadFiles(files);
+  };
+
+  const handleClickSubmit = async () => {
+    await uploadFiles(droppedFiles);
   };
 
   const uploadFiles = async (files: File[]) => {
@@ -82,6 +87,8 @@ export default function HomePage() {
       formData.append("file", file);
     });
 
+    formData.append("user_promt", inputData);
+    
     try {
       setIsLoading(true);
       setProgress(0);
@@ -208,6 +215,24 @@ export default function HomePage() {
             multiple
             hidden
             onChange={handleFileChange}
+          />
+        </div>
+
+        <div>
+          <input
+            type="text"
+            value={inputData}
+            onChange={(e) => {
+              setInputData(e.target.value);
+            }}
+            placeholder="Noi dung chinh cua file am thanh ma ban muon tom tat"
+            className="w-full rounded-2xl p-2 mt-2 border border-gray-300 outline-blue-300 hover:bg-blue-100  transitiion-all duration-200"
+          />
+        </div>
+        <div onClick={handleClickSubmit} className="flex justify-center">
+          <input
+            type="submit"
+            className="w-64 p-2 mt-2 rounded-2xl border border-gray-300 hover:border-blue-400 hover:bg-blue-200  transitiion-all duration-200 cursor-pointer"
           />
         </div>
         {/* loading */}
