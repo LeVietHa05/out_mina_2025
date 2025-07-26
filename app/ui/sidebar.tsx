@@ -41,7 +41,7 @@ export default function Sidebar() {
         const res = await fetch(NEXT_PUBLIC_CHAT_API, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message }),
+          body: JSON.stringify({ content: message }),
         });
 
         if (!res.ok) throw new Error("AI không phản hồi");
@@ -51,7 +51,7 @@ export default function Sidebar() {
         // 3. Hiển thị phản hồi từ AI
         setChatMessages((prev) => [
           ...prev,
-          { text: data.reply, sender: "AI" },
+          { text: data.content, sender: "AI" },
         ]);
       } catch (err) {
         console.log(err);
