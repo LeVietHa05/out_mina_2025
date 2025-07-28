@@ -34,9 +34,24 @@ export default function HomePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFilter, setSelectedFilter] = useState<string>("mine");
   const [meetingData, setMeetingData] = useState<MeetingContent | null>(null);
+  const [job_id, setJobid] = useState<string>("");
+  const [isCopied, setIsCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0); // giá trị từ 0 đến 100
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // // TEST:
+  // setTimeout(() => {
+  //   setJobid("c9ebf4aa-ec8f-44e7-9cd4-e86cdbee63ec");
+  // }, 1);
+
+  const handleClickCopy = async () => {
+    await navigator.clipboard.writeText(`job_id: ${job_id}`);
+    setIsCopied(true);
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 2000);
+  };
 
   const handleFilterClick = (key: string) => {
     setSelectedFilter(key);
@@ -81,6 +96,11 @@ export default function HomePage() {
       return;
     }
 
+    if (files.length === 0) {
+      alert("Vui lòng chọn ít nhất một tệp để tải lên.");
+      return;
+    }
+
     const formData = new FormData();
     files.forEach((file) => {
       console.log(file);
@@ -88,7 +108,7 @@ export default function HomePage() {
     });
 
     formData.append("user_promt", inputData);
-    
+
     try {
       setIsLoading(true);
       setProgress(0);
@@ -112,11 +132,11 @@ export default function HomePage() {
 
       const result = await res.json();
 
-      const jobID = result.job_id;
-      console.log("jobID:", jobID);
+      setJobid(result.job_id);
+      console.log("jobID:", job_id);
       setProgress(50);
 
-      const newRes = await fetch(`${NEXT_PUBLIC_API_URL_2}?job_id=${jobID}`);
+      const newRes = await fetch(`${NEXT_PUBLIC_API_URL_2}?job_id=${job_id}`);
       if (!newRes.ok) {
         throw new Error("Lỗi khi lấy kết quả từ hệ thống.");
       }
@@ -235,6 +255,25 @@ export default function HomePage() {
             className="w-64 p-2 mt-2 rounded-2xl border border-gray-300 hover:border-blue-400 hover:bg-blue-200  transitiion-all duration-200 cursor-pointer"
           />
         </div>
+        {/* JOB ID */}
+        {job_id && (
+          <div className="w-fit mx-auto mt-2 p-4 border-2 border-gray-200 rounded-2xl shadow-lg">
+            <div className="text-base mb-2">
+              Bạn hãy dùng job_id này để có thể trò chuyện thêm với tôi nhé.
+            </div>
+            <div className="w-full flex justify-between    gap-2">
+              <div
+                onClick={handleClickCopy}
+                className="w-fit bg-gray-300 border border-gray-500 p-2 rounded-full cursor-pointer hover:shadow-md"
+              >
+                job_id: {job_id}
+              </div>
+              {isCopied && (
+                <div className="bg-green-200 border rounded-full border-green-500 p-2">Copied!</div>
+              )}
+            </div>
+          </div>
+        )}
         {/* loading */}
         {isLoading && (
           <div className="mt-6">

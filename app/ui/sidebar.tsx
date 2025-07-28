@@ -15,7 +15,7 @@ export default function Sidebar() {
   const [inputMessageValue, setInputMessageValue] = useState<string>("");
   const [chatMessages, setChatMessages] = useState<
     { text: string; sender: "user" | "AI" }[]
-  >([{ text: "Chào bạn! Mình là AI hỗ trợ của bạn nè.", sender: "AI" }]);
+  >([{ text: "Chào bạn! Mình là AI hỗ trợ của bạn nè. Để được support liên quan đến đoạn tóm tắt, bạn hãy nhập theo cú pháp: 'job_id: thay-id-thật-vào-đây' cộng với câu hỏi của bạn nhé. Nếu bạn nhập sai thì tôi không giúp bạn được đâu.", sender: "AI" }]);
 
   //scroll to top when messaging
   useEffect(() => {
