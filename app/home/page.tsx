@@ -21,7 +21,8 @@ const filters = [
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 const NEXT_PUBLIC_API_URL_2 = process.env.NEXT_PUBLIC_API_URL_2 || "";
-if (!NEXT_PUBLIC_API_URL || !NEXT_PUBLIC_API_URL_2) {
+const NEXT_PUBLIC_API_URL_3 = process.env.NEXT_PUBLIC_API_URL_3 || "";
+if (!NEXT_PUBLIC_API_URL || !NEXT_PUBLIC_API_URL_2 || !NEXT_PUBLIC_API_URL_3) {
   throw new Error(
     "NEXT_PUBLIC_API_URL is not defined in the environment variables"
   );
@@ -136,14 +137,19 @@ export default function HomePage() {
       console.log("jobID:", job_id);
       setProgress(50);
 
-      const newRes = await fetch(`${NEXT_PUBLIC_API_URL_2}?job_id=${job_id}`);
-      if (!newRes.ok) {
-        throw new Error("Lỗi khi lấy kết quả từ hệ thống.");
-      }
-      const newResult = await newRes.json();
-      setProgress(100);
-
-      setMeetingData(newResult.content);
+      setInterval(async () => {
+        const newRes = await fetch(`${NEXT_PUBLIC_API_URL_3}${job_id}`);
+        const newRessult = await newRes.json();
+        if (newRessult.status !== "pending") {
+          setProgress(75);
+          const final = await fetch(
+            `${NEXT_PUBLIC_API_URL_2}?job_id=${job_id}`
+          );
+          const finalRes = await final.json();
+          setMeetingData(finalRes.content);
+          setProgress(100);
+        }
+      }, 1000);
     } catch (err) {
       console.error(err);
       setErrorMessage(
@@ -269,7 +275,9 @@ export default function HomePage() {
                 job_id: {job_id}
               </div>
               {isCopied && (
-                <div className="bg-green-200 border rounded-full border-green-500 p-2">Copied!</div>
+                <div className="bg-green-200 border rounded-full border-green-500 p-2">
+                  Copied!
+                </div>
               )}
             </div>
           </div>
