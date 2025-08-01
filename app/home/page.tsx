@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import MeetingSummary from "../ui/meetingSumary";
 import ErrorAlert from "../ui/errorAlert";
 
@@ -133,23 +133,11 @@ export default function HomePage() {
 
       const result = await res.json();
 
-      setJobid(result.job_id);
-      console.log("jobID:", job_id);
-      setProgress(50);
+      console.log("result:", result);
+      setTimeout(() => {
+        setJobid(result.job_id);
+      }, 3000);
 
-      setInterval(async () => {
-        const newRes = await fetch(`${NEXT_PUBLIC_API_URL_3}${job_id}`);
-        const newRessult = await newRes.json();
-        if (newRessult.status !== "pending") {
-          setProgress(75);
-          const final = await fetch(
-            `${NEXT_PUBLIC_API_URL_2}?job_id=${job_id}`
-          );
-          const finalRes = await final.json();
-          setMeetingData(finalRes.content);
-          setProgress(100);
-        }
-      }, 1000);
     } catch (err) {
       console.error(err);
       setErrorMessage(
@@ -157,13 +145,43 @@ export default function HomePage() {
           ? err.message
           : "Đã có lỗi xảy ra khi xử lý yêu cầu."
       );
-    } finally {
-      setTimeout(() => {
-        setIsLoading(false);
-        setProgress(0); // Reset sau một khoảng thời gian nhỏ
-      }, 300);
     }
   };
+
+  useEffect(() => {
+    if (!job_id) return;
+    console.log("jobID:", job_id);
+    setProgress(25);
+
+    const intervalId = setInterval(async () => {
+      const res = await fetch(`${NEXT_PUBLIC_API_URL_3}${job_id}`)
+      if (!res.ok) {
+        console.log("Error fetching data:", res.statusText);
+        return;
+      }
+
+      const data = await res.json();
+      console.log("Fetched data:", data);
+
+      if (data.status === "processing") {
+        setProgress((prev) => Math.min(prev + 5, 99, 100));
+      } else {
+        const res2 = await fetch(`${NEXT_PUBLIC_API_URL_2}?job_id=${job_id}`);
+        if (!res2.ok) {
+          console.log("Error fetching meeting data:", res2.statusText);
+          return;
+        }
+        const meetingData = await res2.json();
+        console.log("Meeting data:", meetingData);
+
+        setMeetingData(meetingData.content);
+        setProgress(100);
+        setJobid(""); // Reset job_id after fetching data
+        setIsLoading(false);
+        clearInterval(intervalId);
+      }
+    }, 5000);
+  }, [job_id])
 
   return (
     <div className="space-y-6">
@@ -184,10 +202,9 @@ export default function HomePage() {
                 key={filter.key}
                 onClick={() => handleFilterClick(filter.key)}
                 className={`px-4 py-1.5 rounded-full flex justify-center items-center gap-1 text-sm border transition-all
-                  ${
-                    isActive
-                      ? "bg-blue-100 text-blue-700 border-blue-300"
-                      : "bg-gray-100 text-gray-800 border-transparent hover:bg-gray-200"
+                  ${isActive
+                    ? "bg-blue-100 text-blue-700 border-blue-300"
+                    : "bg-gray-100 text-gray-800 border-transparent hover:bg-gray-200"
                   }`}
               >
                 <Image
@@ -218,11 +235,10 @@ export default function HomePage() {
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`flex flex-col items-center text-center py-10 border rounded-lg border-dashed cursor-pointer ${
-            isDragging
-              ? "bg-blue-50 border-blue-400"
-              : "bg-gray-50 border-gray-300"
-          } transition-all duration-200`}
+          className={`flex flex-col items-center text-center py-10 border rounded-lg border-dashed cursor-pointer ${isDragging
+            ? "bg-blue-50 border-blue-400"
+            : "bg-gray-50 border-gray-300"
+            } transition-all duration-200`}
         >
           <Image
             src="/upload.png"
