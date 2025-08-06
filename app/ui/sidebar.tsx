@@ -79,11 +79,11 @@ export default function Sidebar() {
           Chat with AI
         </span>
       </Link>
-      <div className="relative flex items-end flex-1 w-full border border-gray-200 rounded-2xl p-4 mt-4 shadow-lg bg-white">
+      <div className="relative flex items-end flex-1 w-full border border-gray-200 rounded-2xl p-4  mt-4 shadow-lg bg-white">
         {/* các câu thoại ở đây */}
         <div
           ref={chatContainerRef}
-          className="absolute top-0 left-0 w-full h-full overflow-y-auto p-4"
+          className="absolute top-0 left-0 w-full h-full overflow-y-auto p-4 pb-20"
         >
           {/* 1 vai cau chat mac dinh cua AI */}
           {chatMessages.map((msg, idx) => (
